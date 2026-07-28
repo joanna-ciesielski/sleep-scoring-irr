@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sleep-scoring-irr"
+version = "0.1.0"
+description = "Inter-rater reliability statistics for sleep-study scoring — kappa, weighted kappa, Fleiss, Krippendorff's alpha, ICC, with bootstrap CIs."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Joanna Ciesielski" }]
+keywords = ["inter-rater-reliability", "kappa", "krippendorff", "icc", "sleep-scoring", "clinical"]
+dependencies = ["numpy>=1.24"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+irr-demo = "irr.demo:main"
+
+[tool.setuptools]
+packages = ["irr"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
