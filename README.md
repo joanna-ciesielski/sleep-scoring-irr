@@ -1,5 +1,9 @@
 # sleep-scoring-irr
 
+> **Provenance.** Authored on synthetic data, independently of and prior to any
+> client engagement. No client data, code, or domain material appears in this
+> repository.
+
 Inter-rater reliability (IRR) statistics for sleep-study scoring — the agreement
 math a clinical scoring pipeline needs, implemented from first principles and
 tested against hand-computed and published reference values.
