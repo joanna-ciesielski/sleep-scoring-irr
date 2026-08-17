@@ -3,14 +3,14 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sleep-scoring-irr"
+name = "rater-agreement"
 version = "0.1.0"
-description = "Inter-rater reliability statistics for sleep-study scoring — kappa, weighted kappa, Fleiss, Krippendorff's alpha, ICC, with bootstrap CIs."
+description = "Chance-corrected agreement statistics for any raters, human or model — kappa, weighted kappa, Fleiss, Krippendorff's alpha, ICC, intra-rater reliability, kappa-paradox diagnostics, with bootstrap CIs."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Joanna Ciesielski" }]
-keywords = ["inter-rater-reliability", "kappa", "krippendorff", "icc", "sleep-scoring", "clinical"]
+keywords = ["inter-rater-reliability", "intra-rater-reliability", "kappa", "kappa-paradox", "krippendorff", "icc", "agreement", "llm-as-judge", "evaluation"]
 dependencies = ["numpy>=1.24"]
 
 [project.optional-dependencies]

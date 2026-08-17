@@ -1,0 +1,61 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+type: software
+title: "rater-agreement: chance-corrected agreement statistics for any raters, human or model"
+version: 0.1.0
+authors:
+  - family-names: Ciesielski
+    given-names: Joanna
+    orcid: "https://orcid.org/0009-0001-2397-3660"
+repository-code: "https://github.com/joanna-ciesielski/rater-agreement"
+license: MIT
+abstract: >-
+  A small, auditable, numpy-only implementation of chance-corrected
+  inter-rater and intra-rater agreement statistics: percent agreement,
+  Cohen's kappa (unweighted and weighted), Fleiss' kappa, Krippendorff's
+  alpha with missing-data handling, ICC(1,1)/(2,1)/(3,1), bootstrap
+  confidence intervals, kappa-paradox diagnostics (prevalence index, bias
+  index, PABAK), test-retest agreement, decision flip rates, and a
+  repeats-per-item sample-size planner. Built for settings where the
+  reported coefficient must be traceable to a reference: every statistic
+  is validated against hand-computed or published values. Applies equally
+  to human raters and multi-sampled LLM judges.
+keywords:
+  - inter-rater reliability
+  - intra-rater reliability
+  - chance-corrected agreement
+  - Cohen's kappa
+  - kappa paradox
+  - Krippendorff's alpha
+  - intraclass correlation
+  - LLM-as-judge
+  - evaluation
+references:
+  - type: article
+    title: "Bias, prevalence and kappa"
+    authors:
+      - family-names: Byrt
+        given-names: Ted
+      - family-names: Bishop
+        given-names: Janine
+      - family-names: Carlin
+        given-names: John B.
+    journal: "Journal of Clinical Epidemiology"
+    volume: 46
+    issue: 5
+    year: 1993
+    start: 423
+    end: 429
+  - type: article
+    title: "High agreement but low kappa: I. The problems of two paradoxes"
+    authors:
+      - family-names: Feinstein
+        given-names: Alvan R.
+      - family-names: Cicchetti
+        given-names: Domenic V.
+    journal: "Journal of Clinical Epidemiology"
+    volume: 43
+    issue: 6
+    year: 1990
+    start: 543
+    end: 549
