@@ -1,5 +1,7 @@
 # rater-agreement
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21983269.svg)](https://doi.org/10.5281/zenodo.21983269)
+
 > **Provenance.** Authored on synthetic data, independently of and prior to any
 > client engagement. No client data, code, or domain material appears in this
 > repository.
