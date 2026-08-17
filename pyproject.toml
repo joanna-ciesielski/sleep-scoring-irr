@@ -20,7 +20,7 @@ dev = ["pytest>=7"]
 irr-demo = "irr.demo:main"
 
 [tool.setuptools]
-packages = ["irr"]
+packages = ["irr", "raters"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
