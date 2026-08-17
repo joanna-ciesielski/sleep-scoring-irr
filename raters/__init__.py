@@ -10,6 +10,7 @@ are hand-implemented (numpy only) and tested against hand-computed or published
 reference values, so every reported number is traceable to a reference.
 """
 from . import intra
+from . import paradox
 from ._core import UndefinedStatistic
 from .agreement import (
     confusion_matrix,
@@ -24,5 +25,6 @@ from .bootstrap import bootstrap_ci
 __all__ = [
     "percent_agreement", "cohen_kappa", "fleiss_kappa", "krippendorff_alpha",
     "icc", "bootstrap_ci", "confusion_matrix", "UndefinedStatistic", "intra",
+    "paradox",
 ]
 __version__ = "0.1.0"
