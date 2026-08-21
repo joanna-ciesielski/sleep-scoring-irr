@@ -25,7 +25,7 @@ jobs:
       - name: Run tests
         run: pytest -q
       - name: Smoke-test the demo
-        run: python -m irr.demo --epochs 120 --raters 3 --seed 2
+        run: python -m raters.demo --epochs 120 --raters 3 --seed 2
       - name: Smoke-test the worked examples
         run: |
           python examples/sleep_scoring.py --epochs 80 --raters 2
