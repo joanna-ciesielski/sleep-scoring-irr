@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from . import stats
+import raters as stats
 
 # AASM stages in physiological/ordinal order: Wake -> N1 -> N2 -> N3 -> REM.
 # Ordering matters: weighted kappa penalizes far misses more than near ones.

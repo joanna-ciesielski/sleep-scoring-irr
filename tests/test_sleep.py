@@ -3,8 +3,8 @@ realistic error structure, and a coherent drill-down report."""
 import numpy as np
 import pytest
 
-import irr
-from irr import sleep
+import raters as ra
+from raters import sleep
 
 
 def test_generate_epoch_scores_deterministic():
@@ -28,8 +28,8 @@ def test_weighted_beats_unweighted_on_near_misses():
     _, raters = sleep.generate_epoch_scores(n_epochs=400, near_miss=0.15,
                                             far_miss=0.01, seed=7)
     a, b = raters[0], raters[1]
-    unweighted = irr.cohen_kappa(a, b, sleep.AASM_STAGES)
-    weighted = irr.cohen_kappa(a, b, sleep.AASM_STAGES, weights="linear")
+    unweighted = ra.cohen_kappa(a, b, sleep.AASM_STAGES)
+    weighted = ra.cohen_kappa(a, b, sleep.AASM_STAGES, weights="linear")
     assert weighted > unweighted
 
 
@@ -57,8 +57,8 @@ def test_continuous_indices_bias_lowers_icc_2_1():
                                                  noise=1.0, seed=3)
     biased = sleep.generate_continuous_indices(n_subjects=60, rater_bias=6.0,
                                                noise=1.0, seed=3)
-    icc21_u, icc31_u = irr.icc(unbiased, "2,1"), irr.icc(unbiased, "3,1")
-    icc21_b, icc31_b = irr.icc(biased, "2,1"), irr.icc(biased, "3,1")
+    icc21_u, icc31_u = ra.icc(unbiased, "2,1"), ra.icc(unbiased, "3,1")
+    icc21_b, icc31_b = ra.icc(biased, "2,1"), ra.icc(biased, "3,1")
     # bias barely moves consistency but clearly drops absolute agreement
     assert icc31_b - icc21_b > icc31_u - icc21_u
     assert icc21_b < icc21_u

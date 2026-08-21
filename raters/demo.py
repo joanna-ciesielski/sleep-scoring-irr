@@ -1,9 +1,9 @@
 """Command-line demo: run the full inter-rater-reliability drill-down on
 synthetic sleep-scoring data.
 
-    python -m irr.demo                 # epoch staging + continuous-index report
-    python -m irr.demo --epochs 300 --raters 3
-    python -m irr.demo --seed 12
+    python -m raters.demo                 # epoch staging + continuous-index report
+    python -m raters.demo --epochs 300 --raters 3
+    python -m raters.demo --seed 12
 
 100% synthetic data — no patient records are read or written.
 """
@@ -13,8 +13,8 @@ import argparse
 
 import numpy as np
 
-import irr
-from irr import sleep
+import raters
+from raters import sleep
 
 
 def _epoch_section(n_epochs: int, n_raters: int, seed: int) -> list[str]:
@@ -28,13 +28,13 @@ def _continuous_section(n_subjects: int, seed: int) -> list[str]:
     # Two scorers of an AHI-like index, the second carrying a small constant bias.
     data = sleep.generate_continuous_indices(n_subjects=n_subjects, n_raters=2,
                                              rater_bias=1.5, noise=1.5, seed=seed)
-    icc_abs = irr.icc(data, form="2,1")
-    icc_con = irr.icc(data, form="3,1")
+    icc_abs = raters.icc(data, form="2,1")
+    icc_con = raters.icc(data, form="3,1")
 
     def stat_abs(idx):
-        return irr.icc(data[idx], form="2,1")
+        return raters.icc(data[idx], form="2,1")
 
-    lo, hi = irr.bootstrap_ci(stat_abs, data.shape[0], n_boot=500, seed=seed)
+    lo, hi = raters.bootstrap_ci(stat_abs, data.shape[0], n_boot=500, seed=seed)
     lines = [
         "",
         f"Continuous index agreement (AHI-like) — {n_subjects} subjects, 2 raters",

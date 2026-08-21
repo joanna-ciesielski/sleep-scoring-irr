@@ -9,7 +9,7 @@ ICC(2,1) vs ICC(3,1) to expose rater calibration bias.
 
 No patient data is read or written anywhere — the generators are seeded and
 fully synthetic. The domain layer (stage constants, generators, report) lives
-in ``irr.sleep``; the statistics come from the domain-neutral ``raters``
+in ``raters.sleep``; the statistics come from the domain-neutral ``raters``
 package.
 
 Run from a clean clone:
@@ -19,7 +19,7 @@ Run from a clean clone:
 """
 import sys
 
-from irr import demo
+from raters import demo
 
 if __name__ == "__main__":
     raise SystemExit(demo.main(sys.argv[1:]))

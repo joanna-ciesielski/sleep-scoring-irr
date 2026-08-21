@@ -1,5 +1,5 @@
 """The CLI entrypoint runs end-to-end and prints the expected report."""
-from irr import demo
+from raters import demo
 
 
 def test_demo_main_runs(capsys):

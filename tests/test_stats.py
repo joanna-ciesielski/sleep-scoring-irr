@@ -8,7 +8,8 @@ whatever the code happens to emit.
 import numpy as np
 import pytest
 
-import irr
+import raters
+from raters import sleep
 
 
 # ---------------------------------------------------------------------------
@@ -18,27 +19,27 @@ import irr
 def test_percent_agreement():
     a = ["W", "N1", "N2", "N3", "R"]
     b = ["W", "N1", "N3", "N3", "R"]  # one disagreement of five
-    assert irr.percent_agreement(a, b) == pytest.approx(0.8)
+    assert raters.percent_agreement(a, b) == pytest.approx(0.8)
 
 
 def test_confusion_matrix_counts():
     a = ["W", "W", "N1", "N1"]
     b = ["W", "N1", "N1", "N1"]
-    m = irr.confusion_matrix(a, b, ["W", "N1"])
+    m = raters.confusion_matrix(a, b, ["W", "N1"])
     # M[W,W]=1, M[W,N1]=1, M[N1,N1]=2
     assert m.tolist() == [[1, 1], [0, 2]]
 
 
 def test_length_mismatch_raises():
     with pytest.raises(ValueError):
-        irr.percent_agreement(["a"], ["a", "b"])
+        raters.percent_agreement(["a"], ["a", "b"])
     with pytest.raises(ValueError):
-        irr.confusion_matrix(["a"], ["a", "b"], ["a", "b"])
+        raters.confusion_matrix(["a"], ["a", "b"], ["a", "b"])
 
 
 def test_confusion_matrix_unknown_label_raises():
     with pytest.raises(ValueError):
-        irr.confusion_matrix(["W", "X"], ["W", "W"], ["W", "N1"])
+        raters.confusion_matrix(["W", "X"], ["W", "W"], ["W", "N1"])
 
 
 # ---------------------------------------------------------------------------
@@ -54,7 +55,7 @@ def test_cohen_kappa_binary_reference():
     """
     a = ["Y"] * 20 + ["Y"] * 5 + ["N"] * 10 + ["N"] * 15
     b = ["Y"] * 20 + ["N"] * 5 + ["Y"] * 10 + ["N"] * 15
-    assert irr.cohen_kappa(a, b, ["Y", "N"]) == pytest.approx(0.40)
+    assert raters.cohen_kappa(a, b, ["Y", "N"]) == pytest.approx(0.40)
 
 
 def test_weighted_kappa_reference_and_ordering():
@@ -67,8 +68,8 @@ def test_weighted_kappa_reference_and_ordering():
     a = ["0", "0", "1", "1", "2", "2"]
     b = ["0", "1", "1", "2", "2", "2"]
     cats = ["0", "1", "2"]
-    unweighted = irr.cohen_kappa(a, b, cats)
-    linear = irr.cohen_kappa(a, b, cats, weights="linear")
+    unweighted = raters.cohen_kappa(a, b, cats)
+    linear = raters.cohen_kappa(a, b, cats, weights="linear")
     assert unweighted == pytest.approx(0.500)
     assert linear == pytest.approx(0.625)
     assert linear > unweighted  # near-misses cost less under weighting
@@ -80,15 +81,15 @@ def test_quadratic_weight_leq_linear_penalty():
     a = ["0", "0", "1", "1", "2", "2"]
     b = ["0", "1", "1", "2", "2", "2"]
     cats = ["0", "1", "2"]
-    linear = irr.cohen_kappa(a, b, cats, weights="linear")
-    quad = irr.cohen_kappa(a, b, cats, weights="quadratic")
+    linear = raters.cohen_kappa(a, b, cats, weights="linear")
+    quad = raters.cohen_kappa(a, b, cats, weights="quadratic")
     assert quad >= linear
 
 
 def test_perfect_agreement_is_one():
     a = ["W", "N1", "N2", "N3", "R", "N2"]
-    assert irr.cohen_kappa(a, a, irr.AASM_STAGES) == pytest.approx(1.0)
-    assert irr.cohen_kappa(a, a, irr.AASM_STAGES, weights="linear") == pytest.approx(1.0)
+    assert raters.cohen_kappa(a, a, sleep.AASM_STAGES) == pytest.approx(1.0)
+    assert raters.cohen_kappa(a, a, sleep.AASM_STAGES, weights="linear") == pytest.approx(1.0)
 
 
 def test_kappa_paradox():
@@ -99,13 +100,13 @@ def test_kappa_paradox():
     """
     a = ["0"] * 90 + ["0"] * 5 + ["1"] * 4 + ["1"] * 1
     b = ["0"] * 90 + ["1"] * 5 + ["0"] * 4 + ["1"] * 1
-    assert irr.percent_agreement(a, b) == pytest.approx(0.91)
-    assert irr.cohen_kappa(a, b, ["0", "1"]) == pytest.approx(0.134615, abs=1e-5)
+    assert raters.percent_agreement(a, b) == pytest.approx(0.91)
+    assert raters.cohen_kappa(a, b, ["0", "1"]) == pytest.approx(0.134615, abs=1e-5)
 
 
 def test_unknown_weights_raises():
     with pytest.raises(ValueError):
-        irr.cohen_kappa(["a", "b"], ["a", "b"], ["a", "b"], weights="cubic")
+        raters.cohen_kappa(["a", "b"], ["a", "b"], ["a", "b"], weights="cubic")
 
 
 # ---------------------------------------------------------------------------
@@ -119,17 +120,17 @@ def test_fleiss_kappa_reference():
     kappa = (2/3 - 1/2)/(1 - 1/2) = 1/3.
     """
     counts = np.array([[3, 0], [2, 1], [1, 2], [0, 3]])
-    assert irr.fleiss_kappa(counts) == pytest.approx(1 / 3)
+    assert raters.fleiss_kappa(counts) == pytest.approx(1 / 3)
 
 
 def test_fleiss_perfect_agreement():
     counts = np.array([[3, 0], [0, 3], [3, 0]])
-    assert irr.fleiss_kappa(counts) == pytest.approx(1.0)
+    assert raters.fleiss_kappa(counts) == pytest.approx(1.0)
 
 
 def test_fleiss_unequal_raters_raises():
     with pytest.raises(ValueError):
-        irr.fleiss_kappa(np.array([[3, 0], [2, 0]]))  # rows sum to 3 vs 2
+        raters.fleiss_kappa(np.array([[3, 0], [2, 0]]))  # rows sum to 3 vs 2
 
 
 # ---------------------------------------------------------------------------
@@ -143,7 +144,7 @@ def test_krippendorff_nominal_reference():
     """
     a = ["a", "a", "b", "b"]
     b = ["a", "b", "b", "b"]
-    assert irr.krippendorff_alpha([a, b], level="nominal") == pytest.approx(8 / 15)
+    assert raters.krippendorff_alpha([a, b], level="nominal") == pytest.approx(8 / 15)
 
 
 def test_krippendorff_interval_reference():
@@ -153,7 +154,7 @@ def test_krippendorff_interval_reference():
     """
     a = ["1", "2", "3"]
     b = ["1", "2", "4"]
-    val = irr.krippendorff_alpha([a, b], level="interval")
+    val = raters.krippendorff_alpha([a, b], level="interval")
     assert val == pytest.approx(0.8780487804878049)
 
 
@@ -162,16 +163,16 @@ def test_krippendorff_interval_preserves_scale_when_category_absent():
     the ordinal spacing must be preserved (not compressed). A distance-2 miss
     (1 vs 3, spanning the absent '2') must cost more than a distance-1 miss."""
     cats = ["0", "1", "2", "3", "4"]
-    full = irr.krippendorff_alpha([["0", "1", "1", "4"], ["0", "1", "3", "4"]],
+    full = raters.krippendorff_alpha([["0", "1", "1", "4"], ["0", "1", "3", "4"]],
                                   level="interval", categories=cats)
-    adjacent = irr.krippendorff_alpha([["0", "1", "1", "4"], ["0", "1", "2", "4"]],
+    adjacent = raters.krippendorff_alpha([["0", "1", "1", "4"], ["0", "1", "2", "4"]],
                                       level="interval", categories=cats)
     assert full < adjacent
 
 
 def test_krippendorff_rejects_labels_outside_categories():
     with pytest.raises(ValueError):
-        irr.krippendorff_alpha([["0", "9"], ["0", "0"]],
+        raters.krippendorff_alpha([["0", "9"], ["0", "0"]],
                                level="interval", categories=["0", "1", "2"])
 
 
@@ -185,13 +186,13 @@ def test_krippendorff_canonical_missing_data():
     C = [N, 3, 3, 3, 2, 3, 4, 2, 2, 5, 1, N]
     D = [1, 2, 3, 3, 2, 4, 4, 1, 2, 5, 1, N]
     data = [A, B, C, D]
-    assert irr.krippendorff_alpha(data, level="nominal") == pytest.approx(0.743, abs=1e-3)
-    assert irr.krippendorff_alpha(data, level="interval") == pytest.approx(0.849, abs=1e-3)
+    assert raters.krippendorff_alpha(data, level="nominal") == pytest.approx(0.743, abs=1e-3)
+    assert raters.krippendorff_alpha(data, level="interval") == pytest.approx(0.849, abs=1e-3)
 
 
 def test_krippendorff_perfect_agreement():
     a = ["W", "N1", "N2", "N3"]
-    assert irr.krippendorff_alpha([a, a, a], level="nominal") == pytest.approx(1.0)
+    assert raters.krippendorff_alpha([a, a, a], level="nominal") == pytest.approx(1.0)
 
 
 # ---------------------------------------------------------------------------
@@ -205,15 +206,15 @@ def test_icc_forms_reference():
     ICC(3,1)=1.0 (consistency ignores the constant offset).
     """
     x = np.array([[1, 2], [2, 3], [3, 4], [4, 5]], dtype=float)
-    assert irr.icc(x, form="2,1") == pytest.approx(10 / 13)
-    assert irr.icc(x, form="3,1") == pytest.approx(1.0)
-    assert irr.icc(x, "3,1") > irr.icc(x, "2,1")  # consistency >= absolute agreement
+    assert raters.icc(x, form="2,1") == pytest.approx(10 / 13)
+    assert raters.icc(x, form="3,1") == pytest.approx(1.0)
+    assert raters.icc(x, "3,1") > raters.icc(x, "2,1")  # consistency >= absolute agreement
 
 
 def test_icc_unknown_form_raises():
     x = np.array([[1, 2], [2, 3], [3, 4]], dtype=float)
     with pytest.raises(ValueError):
-        irr.icc(x, form="1,1")
+        raters.icc(x, form="1,1")
 
 
 # ---------------------------------------------------------------------------
@@ -224,22 +225,22 @@ def test_degenerate_single_category_is_undefined_not_one():
     """A single category carries no information: chance-corrected agreement is
     0/0, which must raise (UndefinedStatistic) rather than silently return 1.0.
     This is what makes the bootstrap skip such resamples instead of inflating."""
-    with pytest.raises(irr.UndefinedStatistic):
-        irr.cohen_kappa(["W", "W", "W"], ["W", "W", "W"], ["W", "N1"])
-    with pytest.raises(irr.UndefinedStatistic):
-        irr.fleiss_kappa(np.array([[3, 0], [3, 0], [3, 0]]))
-    with pytest.raises(irr.UndefinedStatistic):
-        irr.krippendorff_alpha([["W", "W"], ["W", "W"]], level="nominal")
+    with pytest.raises(raters.UndefinedStatistic):
+        raters.cohen_kappa(["W", "W", "W"], ["W", "W", "W"], ["W", "N1"])
+    with pytest.raises(raters.UndefinedStatistic):
+        raters.fleiss_kappa(np.array([[3, 0], [3, 0], [3, 0]]))
+    with pytest.raises(raters.UndefinedStatistic):
+        raters.krippendorff_alpha([["W", "W"], ["W", "W"]], level="nominal")
 
 
 def test_icc_zero_variance_is_undefined():
     """Constant data (no variance) is undefined, not perfect reliability."""
-    with pytest.raises(irr.UndefinedStatistic):
-        irr.icc(np.full((5, 3), 7.0), form="2,1")
+    with pytest.raises(raters.UndefinedStatistic):
+        raters.icc(np.full((5, 3), 7.0), form="2,1")
     # subjects identical, raters differ by a constant -> no between-subject
     # variance -> consistency undefined (must not report 1.0).
-    with pytest.raises(irr.UndefinedStatistic):
-        irr.icc(np.array([[1, 2], [1, 2], [1, 2], [1, 2]], dtype=float), form="3,1")
+    with pytest.raises(raters.UndefinedStatistic):
+        raters.icc(np.array([[1, 2], [1, 2], [1, 2], [1, 2]], dtype=float), form="3,1")
 
 
 # ---------------------------------------------------------------------------
@@ -249,19 +250,19 @@ def test_icc_zero_variance_is_undefined():
 def test_input_validation_guards():
     """Defensive guards raise clear errors rather than producing garbage."""
     with pytest.raises(ValueError):
-        irr.percent_agreement([], [])
+        raters.percent_agreement([], [])
     with pytest.raises(ValueError):
-        irr.cohen_kappa([], [], ["a", "b"])          # empty input
+        raters.cohen_kappa([], [], ["a", "b"])          # empty input
     with pytest.raises(ValueError):
-        irr.fleiss_kappa(np.zeros((0, 2)))           # empty table
+        raters.fleiss_kappa(np.zeros((0, 2)))           # empty table
     with pytest.raises(ValueError):
-        irr.krippendorff_alpha([["a", "b"], ["a"]])  # ragged raters
+        raters.krippendorff_alpha([["a", "b"], ["a"]])  # ragged raters
     with pytest.raises(ValueError):
-        irr.krippendorff_alpha([["a", "b"]], level="ordinal")  # unknown level
+        raters.krippendorff_alpha([["a", "b"]], level="ordinal")  # unknown level
     with pytest.raises(ValueError):
-        irr.icc(np.array([[1.0]]))                    # too small
+        raters.icc(np.array([[1.0]]))                    # too small
     with pytest.raises(ValueError):
-        irr.bootstrap_ci(lambda idx: (_ for _ in ()).throw(irr.UndefinedStatistic("x")),
+        raters.bootstrap_ci(lambda idx: (_ for _ in ()).throw(raters.UndefinedStatistic("x")),
                          5, n_boot=10)                # all resamples degenerate
 
 
@@ -274,28 +275,28 @@ def test_bootstrap_skips_undefined_resamples():
     never happened.)"""
     def stat(idx):
         if 0 not in idx:
-            raise irr.UndefinedStatistic("degenerate")
+            raise raters.UndefinedStatistic("degenerate")
         return 0.5
 
-    lo, hi = irr.bootstrap_ci(stat, 6, n_boot=500, seed=2)
+    lo, hi = raters.bootstrap_ci(stat, 6, n_boot=500, seed=2)
     assert lo == pytest.approx(0.5) and hi == pytest.approx(0.5)
 
 
 def test_bootstrap_ci_brackets_point_estimate():
     rng = np.random.default_rng(0)
-    cats = irr.AASM_STAGES
+    cats = sleep.AASM_STAGES
     truth = rng.integers(0, 5, size=300)
     a = [cats[i] for i in truth]
     # b agrees ~85% of the time, else a random stage
     b = [cats[i] if rng.random() < 0.85 else cats[rng.integers(0, 5)] for i in truth]
-    point = irr.cohen_kappa(a, b, cats)
+    point = raters.cohen_kappa(a, b, cats)
 
     def stat(idx):
         aa = [a[t] for t in idx]
         bb = [b[t] for t in idx]
-        return irr.cohen_kappa(aa, bb, cats)
+        return raters.cohen_kappa(aa, bb, cats)
 
-    lo, hi = irr.bootstrap_ci(stat, len(a), n_boot=400, seed=3)
+    lo, hi = raters.bootstrap_ci(stat, len(a), n_boot=400, seed=3)
     assert lo <= hi
     assert lo <= point <= hi
     assert hi - lo < 0.3  # 300 epochs -> reasonably tight

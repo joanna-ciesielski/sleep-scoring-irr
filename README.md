@@ -91,7 +91,7 @@ within-item variance with CI, and the budget answer: 19 runs per item for a
 **Human raters** — `python examples/sleep_scoring.py`: the original domain
 example, two-plus scorers staging synthetic sleep-study epochs on the ordinal
 AASM scale, with per-pair kappas, per-stage drill-down, and ICC calibration
-gap. 100% generated data; the domain layer lives in `irr.sleep`, not in the
+gap. 100% generated data; the domain layer lives in `raters.sleep`, not in the
 core package.
 
 ## Design decisions
@@ -113,8 +113,9 @@ core package.
   chance-corrected coefficient 0/0. Those inputs raise `UndefinedStatistic`
   rather than returning perfect agreement, which also lets `bootstrap_ci`
   exclude collapsed resamples instead of inflating the interval.
-- **Backward compatibility.** The original `irr` package still imports and
-  works; `irr.stats` re-exports from `raters`.
+- **Single namespace.** Everything installs under `raters` — the former
+  `irr` compatibility shim was folded in before the first PyPI release, so
+  this package cannot collide with the unrelated `irr` project on PyPI.
 
 ## Limitations
 
